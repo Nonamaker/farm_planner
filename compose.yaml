@@ -1,0 +1,26 @@
+services:
+  db:
+    image: farm-planner-db
+    container_name: farm-planner-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: -A md5
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    healthcheck:
+      test: "pg_isready -q -U postgres"
+    volumes:
+      - farm-planner-db-data:/var/lib/postgresql/data
+  app:
+    image: farm-planner-app
+    container_name: farm-planner-app
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  farm-planner-db-data:
