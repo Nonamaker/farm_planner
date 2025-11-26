@@ -11,11 +11,14 @@ services:
       - ${DB_PORT}:${DB_PORT}
     healthcheck:
       test: "pg_isready -q -U postgres"
+      interval: 2s
     volumes:
       - farm-planner-db-data:/var/lib/postgresql/data
   app:
     image: farm-planner-app
     container_name: farm-planner-app
+    volumes:
+      - ./app:/app
     ports:
       - 8000:8000
     depends_on:

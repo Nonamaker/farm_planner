@@ -1,0 +1,12 @@
+<form
+    {% if form.instance.pk %}
+    action="{% url 'plots:beds_update_form' form.instance.pk %}"
+    {% else %}
+    action="{% url 'plots:beds_create_form' %}"
+    {% endif %}
+    method="post"
+>
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="Submit">
+</form>
