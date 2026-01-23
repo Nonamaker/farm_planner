@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}
+Stock Index
+{% endblock title %}
+
+{% block content %}
+{% for item in stock %}
+<p>{{item.uuid}} - {{item.summary}}</p>
+{% endfor %}
+{% endblock content %}
