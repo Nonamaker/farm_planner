@@ -36,7 +36,6 @@ def update_or_create(request, pk=None):
             chicken.band_color = chicken_form.cleaned_data['band_color']
             chicken.band_number = chicken_form.cleaned_data['band_number']
             chicken.breed = chicken_form.cleaned_data['breed']
-            chicken.mature_age = chicken_form.cleaned_data['mature_age']
             chicken.save()
             return HttpResponseRedirect(
                 reverse(

@@ -38,15 +38,23 @@ class LiveStock(models.Model):
         return ' | '.join(elements)
 
 
+class Breed(models.Model):
+    """ Encapsulates data for a specific breed of Chicken. """
+    name = models.TextField()
+    mature_age = models.PositiveSmallIntegerField()   # In weeks. This is not necessarily the date they are fully grown, just sexually mature.
+
+    def __str__(self):
+        return self.name
+
+
 class Chicken(models.Model):
     """ Encapsulates data and logic specific to chickens. """
     # Note: Only solving for the current needs. Not bothering with abstractions such as 'poultry' etc. for the time being.
     #  Solving the specific case and will abstract as needed at a later date.
     livestock = models.OneToOneField('stock.LiveStock', related_name='chicken_data', on_delete=models.deletion.CASCADE)
+    breed = models.ForeignKey('stock.Breed', on_delete=models.deletion.RESTRICT)
     band_color = models.TextField()
-    band_number = models.PositiveSmallIntegerField()
-    breed = models.TextField()
-    mature_age = models.PositiveSmallIntegerField()  # Weeks. This is not necessarily the date they are fully grown, just sexually mature.
+    band_number = models.PositiveSmallIntegerField(null=True)
 
     @property
     def summary(self):
@@ -55,6 +63,43 @@ class Chicken(models.Model):
         elements.append(self.breed)
         return ' | '.join(elements)
 
+
+class Hatch(models.Model):
+    """ Records the conditions during incubation and up until the last chick from the brood has hatched.
+        Known limitations:
+        - Only handles single-breed broods.
+        - The 'create_chickens' does not distinguish between early/late hatching chickens. DOB is the final date for all records.
+        - No support for non-chicken birds.
+        - No support for incubation conditions (temp/rotation frequency/etc.)
+    """
+    start_date = models.DateField()
+    end_date = models.DateField(null=True)
+    equipment = models.TextField()
+    notes = models.TextField()
+    eggs_started = models.PositiveSmallIntegerField()
+    eggs_hatched = models.PositiveSmallIntegerField(null=True)
+    first_hatch_date = models.DateField(null=True)
+    breed = models.ForeignKey('stock.Breed', on_delete=models.deletion.RESTRICT)
+    complete = models.BooleanField(default=False)  # Flag whether the event is finalized
+
+    @property
+    def survival_rate(self):
+        """ Returns the rate of succesful hatch. """
+        return self.eggs_hatched / self.eggs_started
+    
+    def create_chickens(self):
+        """ Creates a number of Chicken records depending on the data from the Hatch. """
+        for _ in range(self.eggs_hatched):
+            stock = Stock.objects.create()
+            livestock = LiveStock()
+            livestock.stock = stock
+            livestock.dob = self.end_date
+            livestock.save()
+            Chicken.objects.create(
+                livestock=livestock,
+                breed=self.breed
+            )
+            
 
 class Egg(models.Model):
     stock = models.OneToOneField('stock.Stock', related_name='egg_data', on_delete=models.deletion.CASCADE)

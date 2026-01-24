@@ -1,0 +1,12 @@
+<form
+    {% if hatch_form.instance.pk %}
+    action="{% url 'stock:hatch_update_form' hatch_form.instance.pk %}"
+    {% else %}
+    action="{% url 'stock:hatch_create_form' %}"
+    {% endif %}
+    method="post"
+>
+    {% csrf_token %}
+    {{hatch_form}}
+    <input type="submit" value="Submit">
+</form>

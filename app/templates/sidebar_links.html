@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="d-block d-md-none col-sm-12" role="navigation">
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Links</a>
+                <ul class="dropdown-menu">
+                    {% include sidebar_links_template %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="d-none d-md-block col-md-2 position-fixed" role="navigation">
+        <ul class="nav nav-pills flex-column">
+            {% include sidebar_links_template %}
+        </ul>
+    </div>
+</div>

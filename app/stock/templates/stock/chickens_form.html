@@ -1,6 +1,6 @@
 <form
-    {% if form.instance.pk %}
-    action="{% url 'stock:chickens_update_form' form.instance.pk %}"
+    {% if chicken_form.instance.pk %}
+    action="{% url 'stock:chickens_update_form' chicken_form.instance.pk %}"
     {% else %}
     action="{% url 'stock:chickens_create_form' %}"
     {% endif %}
