@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+<h2>{{title}}</h2>
+{% endblock title %}
+
+{% block content %}
+
+<form
+    {% if chicken_form.instance.pk %}
+    action="{% url 'stock:chickens_update_form' chicken_form.instance.pk %}"
+    {% else %}
+    action="{% url 'stock:chickens_create_form' %}"
+    {% endif %}
+    method="post"
+>
+    {% csrf_token %}
+    
+    <div class="row">
+
+        <div class="form-group col-4">
+            {{ livestock_form.dob.as_field_group }}
+        </div>
+        <div class="form-group col-4">
+            {{ livestock_form.dod.as_field_group }}
+        </div>
+        <div class="form-group col-4">
+            {{ livestock_form.sex.as_field_group }}
+        </div>
+
+    </div>
+
+        <div class="row">
+
+        <div class="form-group col-4">
+            {{ chicken_form.band_color.as_field_group }}
+        </div>
+        <div class="form-group col-4">
+            {{ chicken_form.band_number.as_field_group }}
+        </div>
+        <div class="form-group col-4">
+            {{ chicken_form.breed.as_field_group }}
+        </div>
+
+    </div>
+
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock content %}

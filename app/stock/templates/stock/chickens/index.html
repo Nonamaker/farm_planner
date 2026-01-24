@@ -1,25 +1,27 @@
 {% extends "base.html" %}
 
 {% block title %}
-<h2>Stock Index</h2>
+<h2>{{title}}</h2>
 {% endblock title %}
 
 {% block content %}
 
 <table class="table table-hover">
     <thead>
-        <th scope="col">UUID</th>
         <th scope="col">Summary</th>
     </thead>
     <tbody>
-        {% for item in stock %}
+        {% for record in records %}
         <tr>
-            <td>{{item.uuid}}</td>
-            <td>{{item.summary}}</td>
+            <td>
+                <a href="{% url 'stock:chickens_update_form' record.pk %}">
+                {{record.summary}}
+                </a>
+            </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="2">No data to display</td>
+            <td colspan="1">No data to display</td>
         </tr>
         {% endfor %}
     </tbody>

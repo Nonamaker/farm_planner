@@ -7,7 +7,19 @@ from stock.forms import ChickenForm, LiveStockForm
 
 
 def index(request):
-    return HttpResponse("Index")
+
+    context = {
+        'records': Chicken.objects.all(),
+        'title': "Chicken Index",
+        'sidebar_links_template': "stock/chickens/index_sidebar_links.html"
+    }
+
+    return render(
+        request,
+        template_name="stock/chickens/index.html",
+        context=context
+    )
+
 
 def update_or_create(request, pk=None):
     if pk is None:
@@ -58,7 +70,7 @@ def update_or_create(request, pk=None):
 
     return render(
         request,
-        template_name="stock/chickens_form.html",
+        template_name="stock/chickens/form.html",
         context=context
     )
 
@@ -67,7 +79,7 @@ def view(request, pk):
     chicken = get_object_or_404(Chicken, pk=pk)
     return render(
         request,
-        template_name="stock/chickens_view.html",
+        template_name="stock/chickens/view.html",
         context={'chicken': chicken}
     )
 

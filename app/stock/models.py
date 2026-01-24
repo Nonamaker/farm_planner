@@ -1,6 +1,7 @@
 """ Contains base models for 'Stock' defined as any object, physical or digital, kept in a trackable state, i.e.
 inventory or livestock. """
 import uuid
+import datetime as dt
 from django.db import models
  
  
@@ -39,9 +40,21 @@ class LiveStock(models.Model):
 
 
 class Breed(models.Model):
-    """ Encapsulates data for a specific breed of Chicken. """
+    """ Encapsulates data for a specific breed of Chicken.
+        Known limitations:
+        - 'eggs_per_year' does not account for numerous other factors impacting lay rate including age, stress, light, etc. etc. A more accurate value could be calculated based on measured data but would just bake-in new assumed factors unless carefully controlled for.
+    """
     name = models.TextField()
     mature_age = models.PositiveSmallIntegerField()   # In weeks. This is not necessarily the date they are fully grown, just sexually mature.
+    # The average eggs produced per year after full maturity. This assumes no decline with age, which is incorrect.
+    eggs_per_year = models.PositiveSmallIntegerField()
+
+    @property
+    def summary(self):
+        """ Returns a very brief summary of what the breed is. """
+        elements = []
+        elements.append(self.name)
+        return ' | '.join(elements)
 
     def __str__(self):
         return self.name
@@ -60,7 +73,9 @@ class Chicken(models.Model):
     def summary(self):
         """ Returns a very brief summary of what the livestock is. """
         elements = []
-        elements.append(self.breed)
+        if self.band_color and self.band_number:
+            elements.append(f"{self.band_number} ({self.band_color})")
+        elements.append(self.breed.summary)
         return ' | '.join(elements)
 
 
@@ -86,6 +101,21 @@ class Hatch(models.Model):
     def survival_rate(self):
         """ Returns the rate of succesful hatch. """
         return self.eggs_hatched / self.eggs_started
+
+    @property
+    def summary(self):
+        """ Returns a very brief summary of what the hatch is. """
+        elements = []
+        elements.append("Hatch")
+        elements.append(self.breed.summary)
+        elements.append(self.start_date.strftime("%Y-%m-%d"))
+        if self.complete:
+            elements.append("Complete")
+            elements.append(f"{self.survival_rate * 100}% success")
+        else:
+            elements.append("Ongoing")
+        # TODO Handle "Scheduled" case where start date is still in the future.
+        return ' | '.join(elements)
     
     def create_chickens(self):
         """ Creates a number of Chicken records depending on the data from the Hatch. """

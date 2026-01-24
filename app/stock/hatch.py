@@ -7,7 +7,20 @@ from stock.forms import HatchForm
 
 
 def index(request):
-    return HttpResponse("Index")
+
+    context = {
+        'stock': Hatch.objects.all(),
+        'title': "Hatch Index",
+        'sidebar_links_template': "stock/hatch/index_sidebar_links.html"
+    }
+
+    return render(
+        request,
+        template_name="stock/hatch/index.html",
+        context=context
+    )
+
+
 
 def update_or_create(request, pk=None):
 
@@ -56,7 +69,7 @@ def update_or_create(request, pk=None):
 
     return render(
         request,
-        template_name="stock/hatch_form.html",
+        template_name="stock/hatch/form.html",
         context=context
     )
 
@@ -65,7 +78,7 @@ def view(request, pk):
     hatch = get_object_or_404(Hatch, pk=pk)
     return render(
         request,
-        template_name="stock/hatch_view.html",
+        template_name="stock/hatch/view.html",
         context={'hatch': hatch}
     )
 
