@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}
+<h2>{{title}}</h2>
+{% endblock title %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-4">
+        <label class="form-label">Breed</label>
+        <input
+            class="form-control"
+            value="{{hatch.breed}}"
+            readonly
+        >
+    </div>
+    <div class="col-4">
+        {{hatch.complete|yesno:"Complete,Ongoing"}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-4">
+        <label class="form-label">Start Date</label>
+        <input
+            class="form-control"
+            value="{{hatch.start_date|date:"Y-m-d"}}"
+            readonly
+        >
+    </div>
+    <div class="col-4">
+        <label class="form-label">First Hatch Date</label>
+        <input
+            class="form-control"
+            value="{{hatch.first_hatch_date|date:"Y-m-d"}}"
+            readonly
+        >
+    </div>
+    <div class="col-4">
+        <label class="form-label">End Date</label>
+        <input
+            class="form-control"
+            value="{{hatch.end_date|date:"Y-m-d"}}"
+            readonly
+        >
+    </div>
+<div>
+<div class="row">
+    <div class="col-4">
+        <label class="form-label">Eggs Started</label>
+        <input
+            class="form-control"
+            value="{{hatch.eggs_started}}"
+            readonly
+        >
+    </div>
+    <div class="col-4">
+        <label class="form-label">Eggs Hatched</label>
+        <input
+            class="form-control"
+            value="{{hatch.eggs_hatched}}"
+            readonly
+        >
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <label class="form-label">Equipment</label>
+        <input
+            class="form-control"
+            value="{{hatch.equipment}}"
+            readonly
+        >
+    </div>
+<div>
+<div class="row">
+    <div class="col">
+        <label class="form-label">Notes</label>
+        <input
+            class="form-control"
+            value="{{hatch.notes}}"
+            readonly
+        >
+    </div>
+<div>
+
+{% endblock content %}

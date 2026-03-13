@@ -88,12 +88,12 @@ class Hatch(models.Model):
         - No support for incubation conditions (temp/rotation frequency/etc.)
     """
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
+    end_date = models.DateField(blank=True, null=True)
     equipment = models.TextField()
-    notes = models.TextField()
+    notes = models.TextField(blank=True)
     eggs_started = models.PositiveSmallIntegerField()
-    eggs_hatched = models.PositiveSmallIntegerField(null=True)
-    first_hatch_date = models.DateField(null=True)
+    eggs_hatched = models.PositiveSmallIntegerField(blank=True, null=True)
+    first_hatch_date = models.DateField(blank=True, null=True)
     breed = models.ForeignKey('stock.Breed', on_delete=models.deletion.RESTRICT)
     complete = models.BooleanField(default=False)  # Flag whether the event is finalized
 

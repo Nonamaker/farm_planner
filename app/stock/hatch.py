@@ -79,7 +79,10 @@ def view(request, pk):
     return render(
         request,
         template_name="stock/hatch/view.html",
-        context={'hatch': hatch}
+        context={
+            'hatch': hatch,
+            'sidebar_links_template': "stock/hatch/view_sidebar_links.html"
+        },
     )
 
 def delete(request, pk):
