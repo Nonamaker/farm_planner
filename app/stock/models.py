@@ -66,15 +66,20 @@ class Chicken(models.Model):
     #  Solving the specific case and will abstract as needed at a later date.
     livestock = models.OneToOneField('stock.LiveStock', related_name='chicken_data', on_delete=models.deletion.CASCADE)
     breed = models.ForeignKey('stock.Breed', on_delete=models.deletion.RESTRICT)
-    band_color = models.TextField()
-    band_number = models.PositiveSmallIntegerField(null=True)
+    band_color = models.TextField(blank=True, null=True)
+    band_number = models.PositiveSmallIntegerField(blank=True, null=True)
+    notes = models.TextField(blank=True)
 
     @property
     def summary(self):
         """ Returns a very brief summary of what the livestock is. """
         elements = []
+        if self.livestock.dod:
+            elements.append("Deceased")
+        elements.extend([self.livestock.sex, self.livestock.dob.strftime("%m-%Y")])
         if self.band_color and self.band_number:
             elements.append(f"{self.band_number} ({self.band_color})")
+
         elements.append(self.breed.summary)
         return ' | '.join(elements)
 
@@ -134,7 +139,15 @@ class Hatch(models.Model):
 class Egg(models.Model):
     stock = models.OneToOneField('stock.Stock', related_name='egg_data', on_delete=models.deletion.CASCADE)
     lay_date = models.DateField()
-    condition = models.TextField()  # i.e. dirty, cracked, small
+    condition = models.TextField(blank=True)  # i.e. dirty, cracked, small
+
+    @property
+    def summary(self):
+        """ Returns a brief description  of what the egg is. """
+        elements = [str(self.pk)]
+        elements.append(self.lay_date.strftime("%Y-%m-%d"))
+        elements.append(str(self.stock.uuid))
+        return ' | '.join(elements)
 
 
 class MRO(models.Model):

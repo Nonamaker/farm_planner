@@ -1,6 +1,6 @@
 from django import forms
 
-from stock.models import Chicken, Hatch, LiveStock
+from stock.models import Chicken, Egg, Hatch, LiveStock
 
 
 class LiveStockForm(forms.ModelForm):
@@ -20,11 +20,12 @@ class LiveStockForm(forms.ModelForm):
 class ChickenForm(forms.ModelForm):
     class Meta:
         model = Chicken
-        fields = ["band_color", "band_number", "breed"]
+        fields = ["band_color", "band_number", "breed", "notes"]
         labels = {
             'band_color': "Band Color",
             'band_number': "Band Number",
-            'breed': "Breed"
+            'breed': "Breed",
+            'notes': "Notes"
         }
         widgets = {
             'band_color': forms.Textarea(attrs={'rows': 1})
@@ -48,4 +49,22 @@ class HatchForm(forms.ModelForm):
         }
         widgets = {
             'equipment': forms.Textarea(attrs={'rows': 1})
+        }
+
+
+class EggDayForm(forms.Form):
+    date = forms.DateField()
+    quantity = forms.IntegerField(min_value=0)
+
+
+class EggForm(forms.ModelForm):
+    class Meta:
+        model = Egg
+        fields = ["lay_date", "condition"]
+        labels = {
+            'lay_date': "Lay Date",
+            'condition': "Condition"
+        }
+        widgets = {
+            'condition': forms.Textarea(attrs={'rows': 1})
         }

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+<h2>{{title}}</h2>
+{% endblock title %}
+
+{% block content %}
+
+<form
+    action="{% url 'stock:egg_update_form' egg_form.instance.pk %}"
+    method="post"
+>
+    {% csrf_token %}
+    
+
+    <div class="row">
+
+        <div class="form-group col-4">
+            {{ egg_form.lay_date.as_field_group }}
+        </div>
+        <div class="form-group col-8">
+            {{ egg_form.condition.as_field_group }}
+        </div>
+
+    </div>
+
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock content %}

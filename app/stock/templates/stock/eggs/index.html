@@ -7,11 +7,6 @@
 {% block content %}
 
 
-Roosters: {{ num_roosters }}
-Hens: {{ num_hens }}
-
-
-
 <table class="table table-hover">
     <thead>
         <th scope="col">Records</th>
@@ -20,7 +15,7 @@ Hens: {{ num_hens }}
         {% for record in records %}
         <tr>
             <td>
-                <a href="{% url 'stock:chickens_update_form' record.pk %}">
+                <a href="{% url 'stock:egg_update_form' record.pk %}">
                 {{record.summary}}
                 </a>
             </td>

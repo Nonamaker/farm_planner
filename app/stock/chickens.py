@@ -8,8 +8,15 @@ from stock.forms import ChickenForm, LiveStockForm
 
 def index(request):
 
+    records = Chicken.objects.all()
+
+    num_roosters = records.filter(livestock__sex="Male", livestock__dod__isnull=True).count()
+    num_hens = records.filter(livestock__sex="Female", livestock__dod__isnull=True).count()
+
     context = {
-        'records': Chicken.objects.all(),
+        'records': records,
+        'num_roosters': num_roosters,
+        'num_hens': num_hens,
         'title': "Chicken Index",
         'sidebar_links_template': "stock/chickens/index_sidebar_links.html"
     }
@@ -48,6 +55,7 @@ def update_or_create(request, pk=None):
             chicken.band_color = chicken_form.cleaned_data['band_color']
             chicken.band_number = chicken_form.cleaned_data['band_number']
             chicken.breed = chicken_form.cleaned_data['breed']
+            chicken.notes = chicken_form.cleaned_data['notes']
             chicken.save()
             return HttpResponseRedirect(
                 reverse(
