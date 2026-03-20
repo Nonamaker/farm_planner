@@ -2,7 +2,10 @@
 inventory or livestock. """
 import uuid
 import datetime as dt
+
 from django.db import models
+from django.db.models import F, Q
+
  
  
 class Stock(models.Model):
@@ -69,6 +72,27 @@ class Chicken(models.Model):
     band_color = models.TextField(blank=True, null=True)
     band_number = models.PositiveSmallIntegerField(blank=True, null=True)
     notes = models.TextField(blank=True)
+
+    @classmethod
+    def flock_size_on_date(cls, date):
+        """ Returns the total number of chickens in the flock on a given date. """
+        # NOTE: Not verified to work!
+        q = Q(livestock__dob__lte=date)
+        q2 = Q(livestock__dod__isnull=True)
+        q2 |= Q(livestock__dod__gte=date)
+        q &= q2
+        return Chicken.objects.filter(q).count()
+    
+    @classmethod
+    def laying_hens_on_date(cls, date):
+        """ Returns the number of mature hens on a given date. """
+        q = Q(livestock__dob__lte=date)
+        q &= Q(livestock__sex__iexact="Female")
+        q &= Q(livestock__dob__lte=date-F("breed__mature_age")*7)
+        q2 = Q(livestock__dod__isnull=True)
+        q2 |= Q(livestock__dod__gte=date)
+        q &= q2
+        return Chicken.objects.filter(q).count()
 
     @property
     def summary(self):

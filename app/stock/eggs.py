@@ -1,11 +1,17 @@
 """ Contains routes related to the creation, modification, and viewing of the number of eggs
 produced per day. """
 
+import datetime as dt
+import pandas as pd
+
+import plotly.express as px
+
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from stock.models import Egg, Stock
+from stock.models import Chicken, Egg, Stock
 from stock.forms import EggForm, EggDayForm
 
 
@@ -13,8 +19,32 @@ def index(request):
 
     records = Egg.objects.all()
 
+    data_as_dict = {}
+    annotated_records = set(records.values_list("lay_date").annotate(daily_total=Count('id')).order_by("-lay_date"))
+    
+    for dt_date, daily_total in annotated_records:
+        date = dt_date.strftime("%Y-%m-%d")
+        if data_as_dict.get(date) is None:
+            data_as_dict[date] = {
+                'date': date,
+                'percent_yield': (daily_total/Chicken.laying_hens_on_date(dt_date))*100
+            }
+
+    sorted_data = sorted(data_as_dict.items(), key = lambda k_v: dt.datetime.strptime(k_v[1]['date'], "%Y-%m-%d"))
+    data = [x[1] for x in sorted_data]
+
+    df = pd.DataFrame(data=data)
+
+    fig = px.line(
+        df,
+        x="date",
+        y="percent_yield"
+    )
+
     context = {
         'records': records,
+        'data': fig.to_json(),
+        'json_file': fig.to_json(),
         'title': "Egg Index",
         'sidebar_links_template': "stock/eggs/index_sidebar_links.html"
     }
